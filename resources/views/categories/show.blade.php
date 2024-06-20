@@ -1,35 +1,35 @@
-@extends('app');
+@extends('app')
 
 @section('content')
-    <div class="container w-25 border p-4">
-        <form action="{{route('todos')}}" method="POST" >
+
+<div class="container w-25 border p-4">
+        <form action="{{route('categories.update', ['category' => $category->id])}}" method="POST" >
+        @method('PATCH')
         @csrf
         
         @if(session('success'))
             <h6 class="alert alert-success">{{session('success')}}</h6>
         @endif
 
-        @error('title')
+        @error('name')
             <h6 class="alert alert-danger">{{$message}}</h6>
         @enderror
 
 
         <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Título de la tarea</label>
-            <input type="text" class="form-control" id="titulo_tarea" name="title">
+            <label for="name" class="form-label">Nombre de la categoría</label>
+            <input type="text" class="form-control" id="name_categoria" name="name" value="{{old('name', $category->name)}}">
         </div>
+
         <div class="mb-3">
-            <label for="category" class="form-label">Categoría</label>
-            <select class="form-select" id="category" name="category_id">
-                @foreach($categories as $category)
-                    <option value="{{$category->id}}">{{$category->name}}</option>
-                @endforeach    
-            </select>
+            <label for="color" class="form-label">Nombre de la categoría</label>
+            <input type="color" class="form-control" id="color_categoria" name="color" value="{{old('color', $category->color)}}">
         </div>
-        <button type="submit" class="btn btn-primary">Crear Nueva Tarea</button> 
+        <button type="submit" class="btn btn-primary">Actualizar Categoría</button> 
         </form>
-        <div >
-            @foreach ($todos as $todo)
+        <div>
+            @if($category->todos()->count() > 0)
+                @foreach($category->todos as $todo)
                 <div class="row py-1">
                     <div class="col-md-9 d-flex align-items-center">
                         <li class="list-group-item"><a href="{{route('todos-edit', ['id' => $todo->id])}}">{{$todo->title}}</a>
@@ -45,6 +45,11 @@
                 </div>
                 
             @endforeach
+            
+            @else
+            <p>No hay tareas asociadas a esta categoría</p>
+            @endif
         </div>
     </div>
+
 @endsection

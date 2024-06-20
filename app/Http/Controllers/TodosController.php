@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Todo;
+use App\Models\Category;
 
 use Illuminate\Http\Request;
 
@@ -25,6 +26,7 @@ class TodosController extends Controller
 
         $todo = new Todo;
         $todo->title = $request->title;
+        $todo->category_id = $request->category_id;
         $todo->save();
 
         //redireccionar
@@ -33,26 +35,29 @@ class TodosController extends Controller
 
      public function index(){
         $todos = Todo::all();
-        return view('todos.index', compact('todos'));
+        $categories = Category::all();
+        return view('todos.index', compact('todos', 'categories'));
      }
 
      public function show($id){
         $todo = Todo::find($id);
-        return view('todos.show', compact('todo'));
+        $categories = Category::all();
+        return view('todos.show', compact('todo', 'categories'));
      }
 
      public function update(Request $request, $id){
         $todo = Todo::find($id);
         $todo->title = $request->title;
+        $todo->category_id = $request->category_id;
         $todo->save();
 
-        return redirect()->route('todos.index')->with('success', 'Tarea actualizada exitosamente.');
+        return redirect()->route('todos')->with('success', 'Tarea actualizada exitosamente.');
      }
 
      public function destroy($id){
         $todo = Todo::find($id);
         $todo->delete();
-        return redirect()->route('todos.index')->with('success', 'Tarea eliminada exitosamente.');
+        return redirect()->route('todos')->with('success', 'Tarea eliminada exitosamente.');
      }
 
 
